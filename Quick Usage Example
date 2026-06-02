@@ -1,0 +1,15 @@
+from openai import OpenAI
+from guard import track_cost_and_retry
+
+client = OpenAI(api_key="your-openai-api-key")
+
+# Simply add the decorator to your completion function
+@track_cost_and_retry(max_retries=3, initial_delay=2.0)
+def fetch_ai_response(prompt: str, model: str):
+    return client.choices.create(
+        model=model,
+        messages=[{"role": "user", "content": prompt}]
+    )
+
+# Execution logs token distribution and estimated cost automatically!
+response = fetch_ai_response("Explain quantum computing in one sentence.", model="gpt-4o")
